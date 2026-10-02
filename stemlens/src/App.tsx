@@ -1,4 +1,5 @@
-import './App.css'
+import "./styles/App.css";
+import ProblemSection from "./components/problemSection";
 
 function App() {
   return (
@@ -16,11 +17,7 @@ function App() {
       </aside>
 
       <main className="workspace">
-        <section className="problem-section">
-          <p className="label">Problem</p>
-          <h2>Find the integral:</h2>
-          <div className="equation">∫ x · e^(x²) dx</div>
-        </section>
+        <ProblemSection />
 
         <section className="work-section">
           <div className="work-header">
@@ -28,10 +25,10 @@ function App() {
             <span>Not checked</span>
           </div>
 
-         <textarea
-          placeholder="Write your solution here..."
-          className="work-input"
-        />
+          <textarea
+            placeholder="Write your solution here..."
+            className="work-input"
+          />
 
           <div className="toolbar">
             <button>Pen</button>

@@ -6,8 +6,8 @@
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
 
-  color: #e9ecf5;
-  background: #0d1017;
+  color: #e7eaf3;
+  background: #11141d;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -17,12 +17,13 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #0d1017;
-  color: #e9ecf5;
+  background: #11141d;
+  color: #e7eaf3;
 }
 
 button,
-textarea {
+textarea,
+input {
   font: inherit;
 }
 
@@ -36,20 +37,14 @@ button {
 }
 
 /* =========================
-   MAIN APP
+   APP LAYOUT
    ========================= */
 
 .app {
   min-height: 100vh;
-
   display: grid;
-
-  grid-template-columns:
-    230px
-    minmax(0, 1fr)
-    300px;
-
-  background: #0d1017;
+  grid-template-columns: 230px minmax(0, 1fr) 300px;
+  background: #11141d;
 }
 
 /* =========================
@@ -57,74 +52,64 @@ button {
    ========================= */
 
 .sidebar {
-  background: #151923;
-
-  border-right: 1px solid #282e3b;
-
+  min-height: 100vh;
   padding: 30px 20px;
 
-  min-height: 100vh;
+  background: #171b26;
+  border-right: 1px solid #282d3a;
 }
 
 .sidebar h1 {
   margin: 0 0 38px;
-
   padding-left: 10px;
+
+  color: #f4f6fb;
 
   font-size: 26px;
   font-weight: 800;
-
-  letter-spacing: -0.7px;
-
-  color: #f7f8ff;
+  letter-spacing: -0.6px;
 }
 
 .sidebar nav {
   display: flex;
   flex-direction: column;
-
   gap: 8px;
 }
 
 .sidebar button {
   width: 100%;
 
-  border: 1px solid transparent;
-
-  background: transparent;
-
-  color: #949db1;
-
-  text-align: left;
-
   padding: 12px 14px;
 
+  border: 1px solid transparent;
   border-radius: 10px;
 
-  cursor: pointer;
+  background: transparent;
+  color: #9fa7bb;
 
+  text-align: left;
   font-weight: 500;
+
+  cursor: pointer;
 }
 
 .sidebar button:hover {
-  background: #1d2230;
-
+  background: #202634;
   color: #ffffff;
 
   transform: translateX(2px);
 }
 
-/* Active workspace button */
+/* Active workspace item */
 
 .sidebar button:nth-child(3) {
-  background: #242442;
-
+  background: #29284a;
   color: #969cff;
 
-  border: 1px solid #34355d;
+  border-color: #3a3963;
 
   box-shadow:
-    0 0 18px rgba(111, 105, 255, 0.08),
+    0 0 18px rgba(111, 105, 255, 0.09),
     inset 0 0 12px rgba(111, 105, 255, 0.04);
 
   font-weight: 600;
@@ -136,124 +121,99 @@ button {
 
 .workspace {
   width: 100%;
-
-  max-width: 960px;
+  max-width: 980px;
 
   margin: 0 auto;
-
   padding: 38px 42px;
 
   min-width: 0;
+
+  background: #11141d;
 }
 
-/* =========================
-   PROBLEM CARD
-   ========================= */
+.problem-section,
+.work-section {
+  background: #181c27;
 
-.problem-section {
-  background: #171b26;
-
-  border: 1px solid #2b3140;
-
+  border: 1px solid #2a3040;
   border-radius: 16px;
 
-  padding: 25px 28px;
-
-  margin-bottom: 22px;
-
   box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.18),
-    0 0 30px rgba(99, 102, 241, 0.035);
+    0 8px 28px rgba(0, 0, 0, 0.18),
+    0 0 30px rgba(99, 102, 241, 0.025);
+}
+
+.problem-section {
+  padding: 24px 28px;
+  margin-bottom: 22px;
 }
 
 .label {
   margin: 0 0 12px;
 
+  color: #7d869d;
+
   font-size: 12px;
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.09em;
-
   font-weight: 700;
 
-  color: #747e94;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 .problem-section h2 {
   margin: 0;
 
-  font-size: 17px;
-
-  font-weight: 500;
-
   color: #b6bed0;
+
+  font-size: 17px;
+  font-weight: 500;
 }
 
 .equation {
   margin-top: 18px;
 
-  font-size: 31px;
+  color: #f5f7ff;
 
+  font-size: 30px;
   font-weight: 500;
-
-  letter-spacing: -0.5px;
-
-  color: #f7f8ff;
+  letter-spacing: -0.4px;
 }
 
 /* =========================
-   WORK CARD
+   WORK SECTION
    ========================= */
 
 .work-section {
-  background: #171b26;
-
-  border: 1px solid #2b3140;
-
-  border-radius: 16px;
-
   padding: 22px;
-
-  box-shadow:
-    0 10px 35px rgba(0, 0, 0, 0.22),
-    0 0 35px rgba(111, 105, 255, 0.025);
 }
 
 .work-header {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
-  margin-bottom: 18px;
-
   gap: 20px;
+
+  margin-bottom: 18px;
 }
 
 .work-header h2 {
   margin: 0;
 
+  color: #f4f6fb;
+
   font-size: 21px;
-
   font-weight: 700;
-
-  letter-spacing: -0.3px;
-
-  color: #f3f5fb;
 }
 
 .work-header span {
   padding: 7px 11px;
 
+  border: 1px solid #303746;
   border-radius: 999px;
 
   background: #222734;
-
-  border: 1px solid #2d3443;
-
-  color: #949db0;
+  color: #9ea7bb;
 
   font-size: 12px;
 
@@ -266,16 +226,14 @@ button {
 
 .work-input {
   width: 100%;
-
   min-height: 430px;
 
   resize: vertical;
 
   padding: 22px;
 
+  border: 1px solid #2c3241;
   border-radius: 13px;
-
-  border: 1px solid #2e3544;
 
   outline: none;
 
@@ -284,36 +242,30 @@ button {
       rgba(116, 124, 255, 0.025) 1px,
       transparent 1px
     ),
-    #11151e;
+    #141821;
 
   background-size: 100% 32px;
 
-  color: #f4f5fb;
+  color: #f4f6fb;
 
   font-size: 16px;
-
   line-height: 2;
 
-  caret-color: #888dff;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  caret-color: #8d93ff;
 }
 
 .work-input::placeholder {
-  color: #596276;
+  color: #656d80;
 }
 
 .work-input:focus {
-  border-color: #696ff2;
+  background-color: #161a24;
 
-  background-color: #131823;
+  border-color: #737cff;
 
   box-shadow:
-    0 0 0 3px rgba(105, 111, 242, 0.1),
-    0 0 25px rgba(105, 111, 242, 0.05);
+    0 0 0 3px rgba(115, 124, 255, 0.12),
+    0 0 24px rgba(115, 124, 255, 0.05);
 }
 
 /* =========================
@@ -321,35 +273,30 @@ button {
    ========================= */
 
 .toolbar {
-  margin-top: 15px;
-
   display: flex;
-
   align-items: center;
+  flex-wrap: wrap;
 
   gap: 8px;
 
-  flex-wrap: wrap;
+  margin-top: 15px;
 }
 
 .toolbar button {
+  padding: 9px 13px;
+
   border: 1px solid #303746;
-
-  background: #1b202b;
-
-  color: #adb5c7;
-
   border-radius: 9px;
 
-  padding: 9px 13px;
+  background: #1b202b;
+  color: #b7bfd0;
 
   cursor: pointer;
 }
 
 .toolbar button:hover {
-  background: #252b39;
-
-  border-color: #424a5d;
+  background: #242a37;
+  border-color: #3d4557;
 
   color: #ffffff;
 
@@ -357,80 +304,71 @@ button {
 }
 
 /* =========================
-   AI TUTOR PANEL
+   AI PANEL
    ========================= */
 
 .ai-panel {
-  background: #151923;
-
-  border-left: 1px solid #282e3b;
+  min-height: 100vh;
 
   padding: 30px 22px;
 
   display: flex;
-
   flex-direction: column;
 
   gap: 12px;
 
-  min-height: 100vh;
+  background: #171b26;
+  border-left: 1px solid #282d3a;
 }
 
 .ai-panel > .label {
   margin-bottom: 8px;
 
-  text-transform: none;
-
-  letter-spacing: 0;
-
-  color: #b2bacb;
+  color: #a4acc0;
 
   font-size: 15px;
+
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-/* =========================
-   CONCEPT CARD
-   ========================= */
-
 .concept-card {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 
   padding: 18px;
 
+  border: 1px solid #34305b;
   border-radius: 14px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(102, 97, 255, 0.14),
-      rgba(126, 91, 239, 0.08)
+      rgba(99, 102, 241, 0.14),
+      rgba(124, 92, 242, 0.08)
     );
 
-  border: 1px solid #39365d;
-
   box-shadow:
-    0 0 25px rgba(110, 100, 255, 0.1),
-    inset 0 0 20px rgba(110, 100, 255, 0.025);
+    0 0 25px rgba(99, 102, 241, 0.1),
+    inset 0 0 18px rgba(99, 102, 241, 0.025);
 }
 
 .concept-card span {
   display: block;
 
-  color: #8f96ad;
+  margin-bottom: 7px;
+
+  color: #8e94ae;
 
   font-size: 12px;
-
-  margin-bottom: 7px;
 }
 
 .concept-card strong {
   display: block;
 
-  color: #f2f1ff;
+  color: #f0f1ff;
 
   font-size: 16px;
-
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 /* =========================
@@ -440,55 +378,43 @@ button {
 .ai-panel button {
   width: 100%;
 
-  border: 1px solid #303746;
-
-  background: #1b202b;
-
-  color: #c0c6d4;
-
-  border-radius: 10px;
-
   padding: 13px 15px;
 
-  cursor: pointer;
+  border: 1px solid #303746;
+  border-radius: 10px;
+
+  background: #1c212c;
+  color: #c4cada;
 
   text-align: left;
-
   font-weight: 500;
+
+  cursor: pointer;
 }
 
 .ai-panel button:hover {
-  background: #252b39;
-
-  color: white;
-
+  background: #262c39;
   border-color: #41495c;
+
+  color: #ffffff;
 }
 
 /* Check My Work */
 
 .ai-panel button:nth-of-type(2) {
-  background: linear-gradient(
-    135deg,
-    #5f64ec,
-    #7559e9
-  );
+  background: linear-gradient(135deg, #6366f1, #7c5cf2);
 
   border-color: transparent;
 
-  color: white;
+  color: #ffffff;
 
   box-shadow:
-    0 0 22px rgba(101, 97, 238, 0.22),
+    0 0 22px rgba(99, 102, 241, 0.22),
     0 6px 18px rgba(0, 0, 0, 0.18);
 }
 
 .ai-panel button:nth-of-type(2):hover {
-  background: linear-gradient(
-    135deg,
-    #7075ff,
-    #8669fa
-  );
+  background: linear-gradient(135deg, #7477ff, #8d6cff);
 
   box-shadow:
     0 0 28px rgba(111, 105, 255, 0.3),
@@ -503,9 +429,7 @@ button {
 
 @media (max-width: 1050px) {
   .app {
-    grid-template-columns:
-      190px
-      minmax(0, 1fr);
+    grid-template-columns: 190px minmax(0, 1fr);
   }
 
   .ai-panel {

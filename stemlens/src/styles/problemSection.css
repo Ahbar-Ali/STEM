@@ -1,0 +1,81 @@
+.problem-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.problem-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.problem-input {
+  width: 100%;
+  min-height: 120px;
+
+  resize: vertical;
+
+  padding: 18px;
+
+  border: 1px solid #2c3241;
+  border-radius: 14px;
+
+  outline: none;
+
+  background: #141821;
+  color: #f4f6fb;
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.problem-input::placeholder {
+  color: #656d80;
+}
+
+.problem-input:focus {
+  border-color: #737cff;
+
+  box-shadow:
+    0 0 0 3px rgba(115, 124, 255, 0.1),
+    0 0 20px rgba(115, 124, 255, 0.05);
+}
+
+.load-problem-btn {
+  align-self: flex-end;
+
+  padding: 10px 16px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: linear-gradient(135deg, #6366f1, #7c5cf2);
+  color: #ffffff;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 18px rgba(99, 102, 241, 0.18),
+    0 5px 14px rgba(0, 0, 0, 0.15);
+}
+
+.load-problem-btn:hover {
+  background: linear-gradient(135deg, #7477ff, #8d6cff);
+
+  box-shadow:
+    0 0 24px rgba(111, 105, 255, 0.28),
+    0 7px 17px rgba(0, 0, 0, 0.18);
+
+  transform: translateY(-1px);
+}
+
+.current-problem {
+  margin-top: 6px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #2a3040;
+}
