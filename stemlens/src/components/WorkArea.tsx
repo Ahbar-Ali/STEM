@@ -16,7 +16,11 @@ type WorkspacePage = {
   name: string;
 };
 
-function WorkArea() {
+type WorkAreaProps = {
+  onWorkChange: (work: string) => void;
+};
+
+function WorkArea({onWorkChange,}: WorkAreaProps)  {
   const [mode, setMode] = useState<Mode>(() => {
     const savedMode = localStorage.getItem("stemlens-mode");
 
@@ -430,6 +434,11 @@ function WorkArea() {
   };
 
   const currentTypedWork = typedWorkByPage[activePageId] || "";
+
+  useEffect(() => {
+    onWorkChange(currentTypedWork);
+    }, [currentTypedWork, onWorkChange]);
+
 
   return (
     <section className="work-section">

@@ -1,8 +1,34 @@
+import { useEffect, useState } from "react";
+
 import "./styles/App.css";
+
 import ProblemSection from "./components/problemSection";
 import WorkArea from "./components/WorkArea";
+import AITutor from "./components/AITutor";
 
 function App() {
+  const [currentProblem, setCurrentProblem] = useState(() => {
+    return localStorage.getItem("stemlens-current-problem") || "";
+  });
+
+  const [currentWork, setCurrentWork] = useState(() => {
+    return localStorage.getItem("stemlens-current-work") || "";
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "stemlens-current-problem",
+      currentProblem
+    );
+  }, [currentProblem]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "stemlens-current-work",
+      currentWork
+    );
+  }, [currentWork]);
+
   return (
     <div className="app">
       <aside className="sidebar">
@@ -18,23 +44,20 @@ function App() {
       </aside>
 
       <main className="workspace">
-          <ProblemSection />
-        <WorkArea />
+        <ProblemSection
+          currentProblem={currentProblem}
+          setCurrentProblem={setCurrentProblem}
+        />
+
+        <WorkArea
+          onWorkChange={setCurrentWork}
+        />
       </main>
 
-      <aside className="ai-panel">
-        <p className="label">AI Tutor</p>
-
-        <div className="concept-card">
-          <span>Detected concept</span>
-          <strong>Integration by substitution</strong>
-        </div>
-
-        <button>Give Hint</button>
-        <button>Check My Work</button>
-        <button>Teach Me</button>
-        <button>Show Solution</button>
-      </aside>
+      <AITutor
+        problem={currentProblem}
+        work={currentWork}
+      />
     </div>
   );
 }

@@ -1,29 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/ProblemSection.css";
 
-function ProblemSection() {
+type ProblemSectionProps = {
+  currentProblem: string;
+  setCurrentProblem: React.Dispatch<
+    React.SetStateAction<string>
+  >;
+};
+
+function ProblemSection({
+  currentProblem,
+  setCurrentProblem,
+}: ProblemSectionProps) {
   const [problemInput, setProblemInput] = useState("");
 
-  const [currentProblem, setCurrentProblem] = useState(() => {
-    return localStorage.getItem("stemlens-current-problem") || "";
-  });
-
   const [isEditing, setIsEditing] = useState(() => {
-    const savedProblem = localStorage.getItem("stemlens-current-problem");
-    return !savedProblem;
+    return !currentProblem;
   });
-
-  useEffect(() => {
-    localStorage.setItem(
-      "stemlens-current-problem",
-      currentProblem
-    );
-  }, [currentProblem]);
 
   const handleLoadProblem = () => {
-    if (!problemInput.trim()) return;
+    const trimmedProblem = problemInput.trim();
 
-    setCurrentProblem(problemInput.trim());
+    if (!trimmedProblem) return;
+
+    setCurrentProblem(trimmedProblem);
+
     setProblemInput("");
     setIsEditing(false);
   };
@@ -33,6 +34,11 @@ function ProblemSection() {
     setIsEditing(true);
   };
 
+  const handleCancelEdit = () => {
+    setProblemInput("");
+    setIsEditing(false);
+  };
+
   return (
     <section className="problem-section">
       {isEditing ? (
@@ -40,7 +46,10 @@ function ProblemSection() {
           <div className="problem-header-row">
             <div>
               <p className="label">Problem</p>
-              <h2>Enter the problem you want to solve</h2>
+
+              <h2>
+                Enter the problem you want to solve
+              </h2>
             </div>
           </div>
 
@@ -59,10 +68,7 @@ function ProblemSection() {
                 <button
                   type="button"
                   className="cancel-edit-btn"
-                  onClick={() => {
-                    setProblemInput("");
-                    setIsEditing(false);
-                  }}
+                  onClick={handleCancelEdit}
                 >
                   Cancel
                 </button>
@@ -81,9 +87,13 @@ function ProblemSection() {
       ) : (
         <div className="compact-problem">
           <div className="compact-problem-content">
-            <p className="label">Current Problem</p>
+            <p className="label">
+              Current Problem
+            </p>
 
-            <h2>{currentProblem}</h2>
+            <h2>
+              {currentProblem}
+            </h2>
           </div>
 
           <button
