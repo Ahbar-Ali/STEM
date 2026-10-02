@@ -1,0 +1,545 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  color: #e9ecf5;
+  background: #0d1017;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #0d1017;
+  color: #e9ecf5;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* =========================
+   MAIN APP
+   ========================= */
+
+.app {
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns:
+    230px
+    minmax(0, 1fr)
+    300px;
+
+  background: #0d1017;
+}
+
+/* =========================
+   LEFT SIDEBAR
+   ========================= */
+
+.sidebar {
+  background: #151923;
+
+  border-right: 1px solid #282e3b;
+
+  padding: 30px 20px;
+
+  min-height: 100vh;
+}
+
+.sidebar h1 {
+  margin: 0 0 38px;
+
+  padding-left: 10px;
+
+  font-size: 26px;
+  font-weight: 800;
+
+  letter-spacing: -0.7px;
+
+  color: #f7f8ff;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.sidebar button {
+  width: 100%;
+
+  border: 1px solid transparent;
+
+  background: transparent;
+
+  color: #949db1;
+
+  text-align: left;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: 500;
+}
+
+.sidebar button:hover {
+  background: #1d2230;
+
+  color: #ffffff;
+
+  transform: translateX(2px);
+}
+
+/* Active workspace button */
+
+.sidebar button:nth-child(3) {
+  background: #242442;
+
+  color: #969cff;
+
+  border: 1px solid #34355d;
+
+  box-shadow:
+    0 0 18px rgba(111, 105, 255, 0.08),
+    inset 0 0 12px rgba(111, 105, 255, 0.04);
+
+  font-weight: 600;
+}
+
+/* =========================
+   MAIN WORKSPACE
+   ========================= */
+
+.workspace {
+  width: 100%;
+
+  max-width: 960px;
+
+  margin: 0 auto;
+
+  padding: 38px 42px;
+
+  min-width: 0;
+}
+
+/* =========================
+   PROBLEM CARD
+   ========================= */
+
+.problem-section {
+  background: #171b26;
+
+  border: 1px solid #2b3140;
+
+  border-radius: 16px;
+
+  padding: 25px 28px;
+
+  margin-bottom: 22px;
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.18),
+    0 0 30px rgba(99, 102, 241, 0.035);
+}
+
+.label {
+  margin: 0 0 12px;
+
+  font-size: 12px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.09em;
+
+  font-weight: 700;
+
+  color: #747e94;
+}
+
+.problem-section h2 {
+  margin: 0;
+
+  font-size: 17px;
+
+  font-weight: 500;
+
+  color: #b6bed0;
+}
+
+.equation {
+  margin-top: 18px;
+
+  font-size: 31px;
+
+  font-weight: 500;
+
+  letter-spacing: -0.5px;
+
+  color: #f7f8ff;
+}
+
+/* =========================
+   WORK CARD
+   ========================= */
+
+.work-section {
+  background: #171b26;
+
+  border: 1px solid #2b3140;
+
+  border-radius: 16px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.22),
+    0 0 35px rgba(111, 105, 255, 0.025);
+}
+
+.work-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+
+  gap: 20px;
+}
+
+.work-header h2 {
+  margin: 0;
+
+  font-size: 21px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+
+  color: #f3f5fb;
+}
+
+.work-header span {
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  background: #222734;
+
+  border: 1px solid #2d3443;
+
+  color: #949db0;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   WRITING AREA
+   ========================= */
+
+.work-input {
+  width: 100%;
+
+  min-height: 430px;
+
+  resize: vertical;
+
+  padding: 22px;
+
+  border-radius: 13px;
+
+  border: 1px solid #2e3544;
+
+  outline: none;
+
+  background:
+    linear-gradient(
+      rgba(116, 124, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    #11151e;
+
+  background-size: 100% 32px;
+
+  color: #f4f5fb;
+
+  font-size: 16px;
+
+  line-height: 2;
+
+  caret-color: #888dff;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.work-input::placeholder {
+  color: #596276;
+}
+
+.work-input:focus {
+  border-color: #696ff2;
+
+  background-color: #131823;
+
+  box-shadow:
+    0 0 0 3px rgba(105, 111, 242, 0.1),
+    0 0 25px rgba(105, 111, 242, 0.05);
+}
+
+/* =========================
+   TOOLBAR
+   ========================= */
+
+.toolbar {
+  margin-top: 15px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+.toolbar button {
+  border: 1px solid #303746;
+
+  background: #1b202b;
+
+  color: #adb5c7;
+
+  border-radius: 9px;
+
+  padding: 9px 13px;
+
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: #252b39;
+
+  border-color: #424a5d;
+
+  color: #ffffff;
+
+  box-shadow: 0 0 16px rgba(112, 118, 255, 0.08);
+}
+
+/* =========================
+   AI TUTOR PANEL
+   ========================= */
+
+.ai-panel {
+  background: #151923;
+
+  border-left: 1px solid #282e3b;
+
+  padding: 30px 22px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  min-height: 100vh;
+}
+
+.ai-panel > .label {
+  margin-bottom: 8px;
+
+  text-transform: none;
+
+  letter-spacing: 0;
+
+  color: #b2bacb;
+
+  font-size: 15px;
+}
+
+/* =========================
+   CONCEPT CARD
+   ========================= */
+
+.concept-card {
+  margin-bottom: 10px;
+
+  padding: 18px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(102, 97, 255, 0.14),
+      rgba(126, 91, 239, 0.08)
+    );
+
+  border: 1px solid #39365d;
+
+  box-shadow:
+    0 0 25px rgba(110, 100, 255, 0.1),
+    inset 0 0 20px rgba(110, 100, 255, 0.025);
+}
+
+.concept-card span {
+  display: block;
+
+  color: #8f96ad;
+
+  font-size: 12px;
+
+  margin-bottom: 7px;
+}
+
+.concept-card strong {
+  display: block;
+
+  color: #f2f1ff;
+
+  font-size: 16px;
+
+  line-height: 1.45;
+}
+
+/* =========================
+   AI BUTTONS
+   ========================= */
+
+.ai-panel button {
+  width: 100%;
+
+  border: 1px solid #303746;
+
+  background: #1b202b;
+
+  color: #c0c6d4;
+
+  border-radius: 10px;
+
+  padding: 13px 15px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  font-weight: 500;
+}
+
+.ai-panel button:hover {
+  background: #252b39;
+
+  color: white;
+
+  border-color: #41495c;
+}
+
+/* Check My Work */
+
+.ai-panel button:nth-of-type(2) {
+  background: linear-gradient(
+    135deg,
+    #5f64ec,
+    #7559e9
+  );
+
+  border-color: transparent;
+
+  color: white;
+
+  box-shadow:
+    0 0 22px rgba(101, 97, 238, 0.22),
+    0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.ai-panel button:nth-of-type(2):hover {
+  background: linear-gradient(
+    135deg,
+    #7075ff,
+    #8669fa
+  );
+
+  box-shadow:
+    0 0 28px rgba(111, 105, 255, 0.3),
+    0 8px 20px rgba(0, 0, 0, 0.22);
+
+  transform: translateY(-1px);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1050px) {
+  .app {
+    grid-template-columns:
+      190px
+      minmax(0, 1fr);
+  }
+
+  .ai-panel {
+    display: none;
+  }
+
+  .workspace {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 720px) {
+  .app {
+    display: block;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .workspace {
+    padding: 18px;
+  }
+
+  .problem-section,
+  .work-section {
+    border-radius: 13px;
+  }
+
+  .equation {
+    font-size: 24px;
+  }
+
+  .work-input {
+    min-height: 360px;
+  }
+}
