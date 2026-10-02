@@ -1,29 +1,52 @@
 .problem-section {
   display: flex;
   flex-direction: column;
+
+  gap: 18px;
+}
+
+/* =========================
+   EDIT / NEW PROBLEM MODE
+   ========================= */
+
+.problem-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
   gap: 20px;
+}
+
+.problem-header-row h2 {
+  margin: 0;
+
+  color: #f0f2f8;
+
+  font-size: 19px;
+  font-weight: 600;
 }
 
 .problem-input-area {
   display: flex;
   flex-direction: column;
+
   gap: 12px;
 }
 
 .problem-input {
   width: 100%;
-  min-height: 120px;
+  min-height: 130px;
 
   resize: vertical;
 
   padding: 18px;
 
   border: 1px solid #2c3241;
-  border-radius: 14px;
+  border-radius: 13px;
 
   outline: none;
 
-  background: #141821;
+  background: #121821;
   color: #f4f6fb;
 
   font-size: 15px;
@@ -42,20 +65,36 @@
     0 0 20px rgba(115, 124, 255, 0.05);
 }
 
-.load-problem-btn {
-  align-self: flex-end;
+.problem-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 
-  padding: 10px 16px;
+  gap: 8px;
+}
 
-  border: 1px solid transparent;
-  border-radius: 10px;
+.load-problem-btn,
+.cancel-edit-btn,
+.edit-problem-btn {
+  padding: 9px 14px;
 
-  background: linear-gradient(135deg, #6366f1, #7c5cf2);
-  color: #ffffff;
-
-  font-weight: 600;
+  border-radius: 9px;
 
   cursor: pointer;
+
+  font-weight: 600;
+}
+
+.load-problem-btn {
+  border: 1px solid transparent;
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #7c5cf2
+  );
+
+  color: #ffffff;
 
   box-shadow:
     0 0 18px rgba(99, 102, 241, 0.18),
@@ -63,19 +102,89 @@
 }
 
 .load-problem-btn:hover {
-  background: linear-gradient(135deg, #7477ff, #8d6cff);
-
-  box-shadow:
-    0 0 24px rgba(111, 105, 255, 0.28),
-    0 7px 17px rgba(0, 0, 0, 0.18);
+  background: linear-gradient(
+    135deg,
+    #7477ff,
+    #8d6cff
+  );
 
   transform: translateY(-1px);
 }
 
-.current-problem {
-  margin-top: 6px;
+.cancel-edit-btn {
+  border: 1px solid #303746;
 
-  padding-top: 20px;
+  background: #1a202b;
+  color: #aeb6c8;
+}
 
-  border-top: 1px solid #2a3040;
+.cancel-edit-btn:hover {
+  background: #252b39;
+  color: #ffffff;
+}
+
+/* =========================
+   COMPACT PROBLEM MODE
+   ========================= */
+
+.compact-problem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  min-height: 82px;
+}
+
+.compact-problem-content {
+  min-width: 0;
+}
+
+.compact-problem-content .label {
+  margin-bottom: 8px;
+}
+
+.compact-problem-content h2 {
+  margin: 0;
+
+  color: #f3f5fb;
+
+  font-size: 20px;
+  font-weight: 600;
+
+  line-height: 1.45;
+
+  overflow-wrap: anywhere;
+}
+
+.edit-problem-btn {
+  flex-shrink: 0;
+
+  border: 1px solid #3a3f55;
+
+  background: #1c2130;
+  color: #a8afff;
+}
+
+.edit-problem-btn:hover {
+  background: #29284a;
+
+  border-color: #4a497a;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 0 16px rgba(111, 105, 255, 0.12);
+}
+
+@media (max-width: 700px) {
+  .compact-problem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .edit-problem-btn {
+    width: 100%;
+  }
 }

@@ -1,5 +1,6 @@
 import "./styles/App.css";
 import ProblemSection from "./components/problemSection";
+import WorkArea from "./components/WorkArea";
 
 function App() {
   return (
@@ -17,27 +18,8 @@ function App() {
       </aside>
 
       <main className="workspace">
-        <ProblemSection />
-
-        <section className="work-section">
-          <div className="work-header">
-            <h2>Your Work</h2>
-            <span>Not checked</span>
-          </div>
-
-          <textarea
-            placeholder="Write your solution here..."
-            className="work-input"
-          />
-
-          <div className="toolbar">
-            <button>Pen</button>
-            <button>Eraser</button>
-            <button>Equation</button>
-            <button>Undo</button>
-            <button>Redo</button>
-          </div>
-        </section>
+          <ProblemSection />
+        <WorkArea />
       </main>
 
       <aside className="ai-panel">

@@ -7,17 +7,22 @@
     sans-serif;
 
   color: #e7eaf3;
-  background: #11141d;
+  background: #0f1219;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+html {
+  background: #0f1219;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #11141d;
+
+  background: #0f1219;
   color: #e7eaf3;
 }
 
@@ -41,10 +46,17 @@ button {
    ========================= */
 
 .app {
+  width: 100%;
   min-height: 100vh;
+
   display: grid;
-  grid-template-columns: 230px minmax(0, 1fr) 300px;
-  background: #11141d;
+
+  grid-template-columns:
+    200px
+    minmax(0, 1fr)
+    260px;
+
+  background: #0f1219;
 }
 
 /* =========================
@@ -53,41 +65,47 @@ button {
 
 .sidebar {
   min-height: 100vh;
-  padding: 30px 20px;
+
+  padding: 26px 18px;
 
   background: #171b26;
-  border-right: 1px solid #282d3a;
+  border-right: 1px solid #282e3b;
 }
 
 .sidebar h1 {
-  margin: 0 0 38px;
+  margin: 0 0 34px;
+
   padding-left: 10px;
 
   color: #f4f6fb;
 
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
+
   letter-spacing: -0.6px;
 }
 
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+
+  gap: 7px;
 }
 
 .sidebar button {
   width: 100%;
 
-  padding: 12px 14px;
+  padding: 11px 12px;
 
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 9px;
 
   background: transparent;
   color: #9fa7bb;
 
   text-align: left;
+
+  font-size: 14px;
   font-weight: 500;
 
   cursor: pointer;
@@ -100,10 +118,9 @@ button {
   transform: translateX(2px);
 }
 
-/* Active workspace item */
-
 .sidebar button:nth-child(3) {
   background: #29284a;
+
   color: #969cff;
 
   border-color: #3a3963;
@@ -121,18 +138,17 @@ button {
 
 .workspace {
   width: 100%;
-  max-width: 980px;
-
-  margin: 0 auto;
-  padding: 38px 42px;
-
   min-width: 0;
 
-  background: #11141d;
+  padding: 24px 26px 60px;
+
+  background: #0f1219;
 }
 
 .problem-section,
 .work-section {
+  width: 100%;
+
   background: #181c27;
 
   border: 1px solid #2a3040;
@@ -144,8 +160,9 @@ button {
 }
 
 .problem-section {
-  padding: 24px 28px;
-  margin-bottom: 22px;
+  padding: 22px 26px;
+
+  margin-bottom: 20px;
 }
 
 .label {
@@ -176,6 +193,7 @@ button {
 
   font-size: 30px;
   font-weight: 500;
+
   letter-spacing: -0.4px;
 }
 
@@ -189,7 +207,7 @@ button {
 
 .work-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 
   gap: 20px;
@@ -202,7 +220,7 @@ button {
 
   color: #f4f6fb;
 
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 700;
 }
 
@@ -221,12 +239,12 @@ button {
 }
 
 /* =========================
-   WRITING AREA
+   TEXT WORK AREA
    ========================= */
 
 .work-input {
   width: 100%;
-  min-height: 430px;
+  min-height: 540px;
 
   resize: vertical;
 
@@ -269,56 +287,20 @@ button {
 }
 
 /* =========================
-   TOOLBAR
-   ========================= */
-
-.toolbar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 8px;
-
-  margin-top: 15px;
-}
-
-.toolbar button {
-  padding: 9px 13px;
-
-  border: 1px solid #303746;
-  border-radius: 9px;
-
-  background: #1b202b;
-  color: #b7bfd0;
-
-  cursor: pointer;
-}
-
-.toolbar button:hover {
-  background: #242a37;
-  border-color: #3d4557;
-
-  color: #ffffff;
-
-  box-shadow: 0 0 16px rgba(112, 118, 255, 0.08);
-}
-
-/* =========================
    AI PANEL
    ========================= */
 
 .ai-panel {
   min-height: 100vh;
 
-  padding: 30px 22px;
+  padding: 26px 18px;
 
   display: flex;
   flex-direction: column;
-
   gap: 12px;
 
   background: #171b26;
-  border-left: 1px solid #282d3a;
+  border-left: 1px solid #282e3b;
 }
 
 .ai-panel > .label {
@@ -326,7 +308,7 @@ button {
 
   color: #a4acc0;
 
-  font-size: 15px;
+  font-size: 14px;
 
   text-transform: none;
   letter-spacing: 0;
@@ -335,10 +317,10 @@ button {
 .concept-card {
   margin-bottom: 8px;
 
-  padding: 18px;
+  padding: 16px;
 
   border: 1px solid #34305b;
-  border-radius: 14px;
+  border-radius: 13px;
 
   background:
     linear-gradient(
@@ -359,7 +341,7 @@ button {
 
   color: #8e94ae;
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .concept-card strong {
@@ -367,26 +349,24 @@ button {
 
   color: #f0f1ff;
 
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.4;
 }
-
-/* =========================
-   AI BUTTONS
-   ========================= */
 
 .ai-panel button {
   width: 100%;
 
-  padding: 13px 15px;
+  padding: 11px 13px;
 
   border: 1px solid #303746;
-  border-radius: 10px;
+  border-radius: 9px;
 
   background: #1c212c;
   color: #c4cada;
 
   text-align: left;
+
+  font-size: 14px;
   font-weight: 500;
 
   cursor: pointer;
@@ -394,12 +374,11 @@ button {
 
 .ai-panel button:hover {
   background: #262c39;
+
   border-color: #41495c;
 
   color: #ffffff;
 }
-
-/* Check My Work */
 
 .ai-panel button:nth-of-type(2) {
   background: linear-gradient(135deg, #6366f1, #7c5cf2);
@@ -427,9 +406,9 @@ button {
    RESPONSIVE
    ========================= */
 
-@media (max-width: 1050px) {
+@media (max-width: 1100px) {
   .app {
-    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-columns: 165px minmax(0, 1fr);
   }
 
   .ai-panel {
@@ -437,7 +416,7 @@ button {
   }
 
   .workspace {
-    padding: 30px;
+    padding: 24px;
   }
 }
 
@@ -451,7 +430,7 @@ button {
   }
 
   .workspace {
-    padding: 18px;
+    padding: 16px;
   }
 
   .problem-section,
@@ -464,6 +443,6 @@ button {
   }
 
   .work-input {
-    min-height: 360px;
+    min-height: 430px;
   }
 }

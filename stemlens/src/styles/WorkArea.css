@@ -1,0 +1,312 @@
+.work-subtitle {
+  margin: 6px 0 0;
+
+  color: #737c91;
+
+  font-size: 13px;
+}
+
+/* =========================
+   PAGE NAVIGATION
+   ========================= */
+
+.workspace-pages {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.page-tabs {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  min-width: 0;
+
+  overflow-x: auto;
+
+  padding-bottom: 2px;
+}
+
+.page-tab {
+  flex-shrink: 0;
+
+  padding: 7px 12px;
+
+  border: 1px solid #303746;
+  border-radius: 8px;
+
+  background: #161b25;
+  color: #8f98ab;
+
+  cursor: pointer;
+}
+
+.page-tab:hover {
+  background: #202634;
+
+  color: #ffffff;
+}
+
+.page-tab.active {
+  background: #29284a;
+
+  border-color: #464578;
+
+  color: #a9adff;
+
+  box-shadow: 0 0 14px rgba(111, 105, 255, 0.1);
+}
+
+.add-page-btn {
+  flex-shrink: 0;
+
+  padding: 8px 12px;
+
+  border: 1px solid #3a3f55;
+  border-radius: 8px;
+
+  background: #1c2130;
+  color: #a8afff;
+
+  cursor: pointer;
+}
+
+.add-page-btn:hover {
+  background: #29284a;
+
+  border-color: #4a497a;
+
+  color: #ffffff;
+
+  box-shadow: 0 0 16px rgba(111, 105, 255, 0.12);
+}
+
+/* =========================
+   TYPE / WRITE SWITCH
+   ========================= */
+
+.mode-switch {
+  display: inline-flex;
+
+  gap: 3px;
+
+  padding: 3px;
+
+  margin-bottom: 12px;
+
+  border: 1px solid #303746;
+  border-radius: 9px;
+
+  background: #131821;
+}
+
+.mode-btn {
+  padding: 7px 17px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #8f98ab;
+
+  cursor: pointer;
+}
+
+.mode-btn:hover {
+  color: #ffffff;
+}
+
+.mode-btn.active {
+  background: #29284a;
+
+  color: #a6aaff;
+
+  box-shadow: 0 0 14px rgba(111, 105, 255, 0.12);
+}
+
+/* =========================
+   DRAWING TOOLBAR
+   ========================= */
+
+.drawing-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  padding: 8px 10px;
+
+  margin-bottom: 12px;
+
+  border: 1px solid #2f3645;
+  border-radius: 11px;
+
+  background: #11161f;
+}
+
+.tool-group,
+.history-buttons {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.tool-btn,
+.history-buttons button {
+  min-height: 35px;
+
+  padding: 7px 10px;
+
+  border: 1px solid #303746;
+  border-radius: 7px;
+
+  background: #1a202b;
+  color: #aeb6c8;
+
+  cursor: pointer;
+}
+
+.tool-btn:hover,
+.history-buttons button:hover {
+  background: #252b39;
+
+  border-color: #41495c;
+
+  color: #ffffff;
+}
+
+.tool-btn.active {
+  background: linear-gradient(
+    135deg,
+    #5f64ec,
+    #7559e9
+  );
+
+  border-color: transparent;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 0 15px rgba(101, 97, 238, 0.24),
+    0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.tool-divider {
+  width: 1px;
+  height: 26px;
+
+  background: #303746;
+}
+
+.tool-control {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #8f98ab;
+
+  font-size: 11px;
+}
+
+.control-label {
+  color: #747e93;
+}
+
+.tool-control input[type="range"] {
+  width: 90px;
+
+  accent-color: #737cff;
+}
+
+.thickness-value {
+  width: 30px;
+
+  color: #b7bfd0;
+
+  font-size: 11px;
+}
+
+.color-picker {
+  width: 30px;
+  height: 27px;
+
+  padding: 2px;
+
+  border: 1px solid #3a4151;
+  border-radius: 6px;
+
+  background: #1c212c;
+
+  cursor: pointer;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.clear-btn {
+  color: #ff9b9b !important;
+}
+
+/* =========================
+   CANVAS
+   ========================= */
+
+.canvas-wrapper {
+  width: 100%;
+  height: 560px;
+
+  overflow: hidden;
+
+  border: 1px solid #2c3241;
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      rgba(116, 124, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    #141821;
+
+  background-size: 100% 32px;
+}
+
+.work-canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  touch-action: none;
+
+  cursor: crosshair;
+}
+
+@media (max-width: 900px) {
+  .workspace-pages {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .drawing-toolbar {
+    align-items: flex-start;
+  }
+
+  .tool-divider {
+    display: none;
+  }
+
+  .toolbar-spacer {
+    display: none;
+  }
+}
