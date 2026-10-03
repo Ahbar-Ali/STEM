@@ -14,6 +14,56 @@ type AITutorProps = {
 
 function AITutor({ problem, work }: AITutorProps) {
   const [mode, setMode] = useState<TutorMode>("idle");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState("");
+
+  const handleCheckWork = async () => {
+    if (!problem.trim() || !work.trim()) {
+        return;
+    }
+
+    setLoading(true);
+    setError("");
+    setFeedback("");
+
+    try {
+        const response = await fetch(
+        "http://127.0.0.1:8000/check-work",
+        {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            problem,
+            work,
+            }),
+        }
+        );
+
+        if (!response.ok) {
+        throw new Error("Failed to check work.");
+        }
+
+        const data = await response.json();
+
+        setFeedback(
+        data.feedback?.message ||
+            "Your work was checked successfully."
+        );
+
+        setMode("check");
+    } catch (err) {
+        console.error("Check work error:", err);
+
+        setError(
+        "Could not connect to the STEMLens backend."
+        );
+    } finally {
+        setLoading(false);
+    }
+    };
 
   return (
     <aside className="ai-panel">
@@ -28,12 +78,19 @@ function AITutor({ problem, work }: AITutorProps) {
 
       {mode === "idle" && (
         <>
+         {error && (
+            <p>{error}</p>
+            )}
+            
           <button onClick={() => setMode("hint")}>
             Give Hint
           </button>
 
-          <button onClick={() => setMode("check")}>
-            Check My Work
+          <button
+            onClick={handleCheckWork}
+            disabled={!problem.trim() || !work.trim() || loading}
+            >
+            {loading ? "Checking..." : "Check My Work"}
           </button>
 
           <button onClick={() => setMode("teach")}>
@@ -64,22 +121,29 @@ function AITutor({ problem, work }: AITutorProps) {
 
       {mode === "check" && (
         <div>
-          <h3>Check Result</h3>
+            <h3>Check Result</h3>
 
-          {work ? (
-            <>
-              <p>Your current work:</p>
-              <p>{work}</p>
-            </>
-          ) : (
-            <p>You haven't entered any work yet.</p>
-          )}
+            <p>Your current work:</p>
+            <p>{work}</p>
 
-          <button onClick={() => setMode("idle")}>
+            <p>
+            <strong>Backend feedback:</strong>
+            </p>
+
+            <p>{feedback}</p>
+
+            <button
+            onClick={handleCheckWork}
+            disabled={loading}
+            >
+            {loading ? "Checking..." : "Check Again"}
+            </button>
+
+            <button onClick={() => setMode("idle")}>
             Back
-          </button>
+            </button>
         </div>
-      )}
+        )}
 
       {mode === "teach" && (
         <div>
