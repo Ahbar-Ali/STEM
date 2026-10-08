@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/WorkArea.css";
-
+import type { WorkspacePageData } from "../types/ai.Tutor";
 type Mode = "type" | "write";
 type Tool = "pen" | "eraser" | "highlighter";
 
@@ -16,11 +16,18 @@ type WorkspacePage = {
   name: string;
 };
 
+
 type WorkAreaProps = {
   onWorkChange: (work: string) => void;
+  onPagesChange: (pages: WorkspacePageData[]) => void;
+  onActivePageChange: (pageId: string) => void;
 };
 
-function WorkArea({onWorkChange,}: WorkAreaProps)  {
+function WorkArea({
+  onWorkChange,
+  onPagesChange,
+  onActivePageChange,
+}: WorkAreaProps)  {
   const [mode, setMode] = useState<Mode>(() => {
     const savedMode = localStorage.getItem("stemlens-mode");
 
@@ -85,84 +92,96 @@ function WorkArea({onWorkChange,}: WorkAreaProps)  {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = window.devicePixelRatio || 1;
+    const setupCanvasSize = () => {
+        const rect = canvas.getBoundingClientRect();
+        const ratio = window.devicePixelRatio || 1;
 
-      const previousImage = ctx.getImageData(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+        canvas.width = rect.width * ratio;
+        canvas.height = rect.height * ratio;
 
-      canvas.width = rect.width * ratio;
-      canvas.height = rect.height * ratio;
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+    };
 
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
+    const restoreCurrentPage = () => {
+        const savedCanvas = localStorage.getItem(
+        `stemlens-canvas-${activePageId}`
+        );
 
-      if (previousImage.width > 0 && previousImage.height > 0) {
-        const tempCanvas = document.createElement("canvas");
+        // Important:
+        // if this page has never been drawn on,
+        // leave the freshly cleared canvas blank.
+        if (!savedCanvas) {
+        return;
+        }
 
-        tempCanvas.width = previousImage.width;
-        tempCanvas.height = previousImage.height;
+        const image = new Image();
 
-        const tempCtx = tempCanvas.getContext("2d");
+        image.onload = () => {
+        const rect = canvas.getBoundingClientRect();
 
-        if (tempCtx) {
-          tempCtx.putImageData(previousImage, 0, 0);
-
-          ctx.drawImage(
-            tempCanvas,
-            0,
-            0,
-            previousImage.width,
-            previousImage.height,
+        ctx.clearRect(
             0,
             0,
             rect.width,
             rect.height
-          );
-        }
-      }
-    };
-
-    const restoreCanvas = () => {
-      const savedCanvas = localStorage.getItem(
-        `stemlens-canvas-${activePageId}`
-      );
-
-      if (!savedCanvas) return;
-
-      const image = new Image();
-
-      image.onload = () => {
-        const rect = canvas.getBoundingClientRect();
+        );
 
         ctx.drawImage(
-          image,
-          0,
-          0,
-          rect.width,
-          rect.height
+            image,
+            0,
+            0,
+            rect.width,
+            rect.height
         );
-      };
+        };
 
-      image.src = savedCanvas;
+        image.src = savedCanvas;
     };
 
-    resizeCanvas();
-    restoreCanvas();
+    const handleResize = () => {
+        const currentImage = canvas.toDataURL("image/png");
 
-    window.addEventListener("resize", resizeCanvas);
+        setupCanvasSize();
+
+        const image = new Image();
+
+        image.onload = () => {
+        const newRect = canvas.getBoundingClientRect();
+
+        ctx.drawImage(
+            image,
+            0,
+            0,
+            newRect.width,
+            newRect.height
+        );
+        };
+
+        image.src = currentImage;
+    };
+
+    // Changing width/height automatically clears the canvas.
+    // This guarantees Page 2 does not inherit Page 1.
+    setupCanvasSize();
+
+    // Restore only this page's saved drawing.
+    restoreCurrentPage();
+
+    window.addEventListener(
+        "resize",
+        handleResize
+    );
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
+        window.removeEventListener(
+        "resize",
+        handleResize
+        );
     };
-  }, [mode, activePageId]);
+    }, [mode, activePageId]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -188,6 +207,20 @@ function WorkArea({onWorkChange,}: WorkAreaProps)  {
         activePageId
     );
     }, [activePageId]);
+
+    useEffect(() => {
+        const pageData = pages.map((page) => ({
+            id: page.id,
+            name: page.name,
+            work: typedWorkByPage[page.id] || "",
+        }));
+
+        onPagesChange(pageData);
+        }, [pages, typedWorkByPage, onPagesChange]);
+
+    useEffect(() => {
+        onActivePageChange(activePageId);
+    }, [activePageId, onActivePageChange]);
 
 
 

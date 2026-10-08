@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import type { WorkspacePageData } from "./types/ai.Tutor";
 
 import "./styles/App.css";
 
 import ProblemSection from "./components/problemSection";
 import WorkArea from "./components/WorkArea";
 import AITutor from "./components/AITutor";
+
 
 function App() {
   const [currentProblem, setCurrentProblem] = useState(() => {
@@ -14,6 +16,9 @@ function App() {
   const [currentWork, setCurrentWork] = useState(() => {
     return localStorage.getItem("stemlens-current-work") || "";
   });
+
+  const [workspacePages, setWorkspacePages] = useState<WorkspacePageData[]>([]);
+  const [activePageId, setActivePageId] = useState("");
 
   useEffect(() => {
     localStorage.setItem(
@@ -51,12 +56,16 @@ function App() {
 
         <WorkArea
           onWorkChange={setCurrentWork}
+          onPagesChange={setWorkspacePages}
+          onActivePageChange={setActivePageId}
         />
       </main>
 
       <AITutor
         problem={currentProblem}
         work={currentWork}
+        pages={workspacePages}
+        activePageId={activePageId}
       />
     </div>
   );
