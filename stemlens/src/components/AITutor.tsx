@@ -186,6 +186,11 @@ useEffect(() => {
     hasSelectedWork &&
     !loading;
 
+    const canUseTypedAI =
+    problem.trim().length > 0 &&
+    typedSelectedPages.length > 0 &&
+    !loading;
+    
   const handleCheckWork = async () => {
     if (!canUseAI) {
       return;
