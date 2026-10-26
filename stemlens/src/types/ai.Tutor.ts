@@ -9,12 +9,14 @@ export type WorkspacePageData = {
   id: string;
   name: string;
   work: string;
+  imageData?: string;
 };
 
 export type SelectedWorkPage = {
   pageId: string;
   pageName: string;
   work: string;
+  imageData?: string;
 };
 
 export type CheckedStep = {

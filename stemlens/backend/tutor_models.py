@@ -1,5 +1,6 @@
+
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 MistakeType = Literal[
@@ -18,7 +19,11 @@ MistakeType = Literal[
 class WorkPage(BaseModel):
     pageId: str
     pageName: str
-    work: str
+    work: str = ""
+    imageData: str | None = Field(
+        default=None,
+        max_length=4_000_000,
+    )
 
 
 class CheckWorkRequest(BaseModel):
@@ -45,3 +50,48 @@ class PageCheckResult(BaseModel):
 class CheckWorkResponse(BaseModel):
     status: Literal["success"]
     pages: list[PageCheckResult]
+
+
+class HintRequest(BaseModel):
+    problem: str
+    pages: list[WorkPage]
+
+
+class HintResponse(BaseModel):
+    title: str
+    hint: str
+    nextQuestion: str
+
+
+class TeachRequest(BaseModel):
+    problem: str
+    pages: list[WorkPage]
+
+
+class LessonSection(BaseModel):
+    title: str
+    explanation: str
+
+
+class TeachResponse(BaseModel):
+    concept: str
+    summary: str
+    lessons: list[LessonSection]
+    formula: str | None = None
+
+
+class SolutionRequest(BaseModel):
+    problem: str
+    pages: list[WorkPage]
+
+
+class SolutionStep(BaseModel):
+    stepNumber: int
+    explanation: str
+    expression: str
+
+
+class SolutionResponse(BaseModel):
+    summary: str
+    steps: list[SolutionStep]
+    finalAnswer: str

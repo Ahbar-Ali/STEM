@@ -636,15 +636,11 @@
   background: rgba(99, 102, 241, 0.07);
 }
 
-.formula-card span {
+.formula-card > span {
   display: block;
-
   margin-bottom: 7px;
-
   color: #7f86a3;
-
   font-size: 8px;
-
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -1124,4 +1120,33 @@
 
   font-size: 9px;
   line-height: 1.5;
+}
+
+/* Mathematical expressions */
+/* STEMLens math rendering */
+
+.math-expression {
+  display: inline-block;
+  width: max-content;
+  max-width: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
+.math-expression .katex {
+  color: inherit;
+  font-size: 1em;
+}
+
+.formula-card > strong {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.solution-step .math-expression {
+  max-width: 100%;
 }

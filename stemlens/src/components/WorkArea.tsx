@@ -1,6 +1,8 @@
+
 import { useEffect, useRef, useState } from "react";
 import "../styles/WorkArea.css";
 import type { WorkspacePageData } from "../types/ai.Tutor";
+
 type Mode = "type" | "write";
 type Tool = "pen" | "eraser" | "highlighter";
 
@@ -16,7 +18,6 @@ type WorkspacePage = {
   name: string;
 };
 
-
 type WorkAreaProps = {
   onWorkChange: (work: string) => void;
   onPagesChange: (pages: WorkspacePageData[]) => void;
@@ -27,62 +28,70 @@ function WorkArea({
   onWorkChange,
   onPagesChange,
   onActivePageChange,
-}: WorkAreaProps)  {
+}: WorkAreaProps) {
   const [mode, setMode] = useState<Mode>(() => {
-    const savedMode = localStorage.getItem("stemlens-mode");
-
-    if (savedMode === "write") {
-      return "write";
-    }
-
-    return "type";
+    return localStorage.getItem("stemlens-mode") === "write"
+      ? "write"
+      : "type";
   });
 
-  const [typedWorkByPage, setTypedWorkByPage] = useState<Record<string, string>>(
-    () => {
-        const saved = localStorage.getItem("stemlens-typed-work-pages");
-
-        if (saved) {
-        return JSON.parse(saved);
-        }
-
-        return {
-        "page-1": "",
-        };
+  const [typedWorkByPage, setTypedWorkByPage] = useState<
+    Record<string, string>
+  >(() => {
+    try {
+      const saved = localStorage.getItem("stemlens-typed-work-pages");
+      return saved ? JSON.parse(saved) : { "page-1": "" };
+    } catch {
+      return { "page-1": "" };
     }
-    );
+  });
 
   const [pages, setPages] = useState<WorkspacePage[]>(() => {
-    const savedPages = localStorage.getItem("stemlens-pages");
-
-    if (savedPages) {
-        return JSON.parse(savedPages);
+    try {
+      const saved = localStorage.getItem("stemlens-pages");
+      return saved
+        ? JSON.parse(saved)
+        : [{ id: "page-1", name: "Page 1" }];
+    } catch {
+      return [{ id: "page-1", name: "Page 1" }];
     }
-
-    return [
-        {
-        id: "page-1",
-        name: "Page 1",
-        },
-    ];
-    });
+  });
 
   const [activePageId, setActivePageId] = useState(() => {
     return localStorage.getItem("stemlens-active-page") || "page-1";
-    });
+  });
 
   const [tool, setTool] = useState<Tool>("pen");
   const [color, setColor] = useState("#ffffff");
   const [lineWidth, setLineWidth] = useState(3);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   const isDrawingRef = useRef(false);
   const lastPointRef = useRef<Point | null>(null);
 
   const undoStackRef = useRef<Snapshot[]>([]);
   const redoStackRef = useRef<Snapshot[]>([]);
 
+  // Keep AI-ready images separate from editable canvas images.
+  const [canvasImagesByPage, setCanvasImagesByPage] = useState<
+    Record<string, string>
+  >(() => {
+    const images: Record<string, string> = {};
+
+    for (const page of pages) {
+      const saved = localStorage.getItem(
+        `stemlens-ai-canvas-${page.id}`
+      );
+
+      if (saved) {
+        images[page.id] = saved;
+      }
+    }
+
+    return images;
+  });
+
+  // Set up and restore the drawing canvas.
   useEffect(() => {
     if (mode !== "write") return;
 
@@ -92,144 +101,124 @@ function WorkArea({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let cancelled = false;
+
     const setupCanvasSize = () => {
-        const rect = canvas.getBoundingClientRect();
-        const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
 
-        canvas.width = rect.width * ratio;
-        canvas.height = rect.height * ratio;
+      canvas.width = Math.round(rect.width * ratio);
+      canvas.height = Math.round(rect.height * ratio);
 
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
     };
 
-    const restoreCurrentPage = () => {
-        const savedCanvas = localStorage.getItem(
-        `stemlens-canvas-${activePageId}`
-        );
+    const restoreImage = (dataUrl: string) => {
+      const image = new Image();
 
-        // Important:
-        // if this page has never been drawn on,
-        // leave the freshly cleared canvas blank.
-        if (!savedCanvas) {
-        return;
-        }
+      image.onload = () => {
+        if (cancelled) return;
 
-        const image = new Image();
-
-        image.onload = () => {
         const rect = canvas.getBoundingClientRect();
 
-        ctx.clearRect(
-            0,
-            0,
-            rect.width,
-            rect.height
-        );
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
 
-        ctx.drawImage(
-            image,
-            0,
-            0,
-            rect.width,
-            rect.height
-        );
-        };
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        ctx.drawImage(image, 0, 0, rect.width, rect.height);
 
-        image.src = savedCanvas;
+        ctx.restore();
+      };
+
+      image.src = dataUrl;
     };
 
-    const handleResize = () => {
-        const currentImage = canvas.toDataURL("image/png");
-
-        setupCanvasSize();
-
-        const image = new Image();
-
-        image.onload = () => {
-        const newRect = canvas.getBoundingClientRect();
-
-        ctx.drawImage(
-            image,
-            0,
-            0,
-            newRect.width,
-            newRect.height
-        );
-        };
-
-        image.src = currentImage;
-    };
-
-    // Changing width/height automatically clears the canvas.
-    // This guarantees Page 2 does not inherit Page 1.
     setupCanvasSize();
 
-    // Restore only this page's saved drawing.
-    restoreCurrentPage();
-
-    window.addEventListener(
-        "resize",
-        handleResize
+    const savedImage = localStorage.getItem(
+      `stemlens-canvas-${activePageId}`
     );
+
+    if (savedImage) {
+      restoreImage(savedImage);
+    }
+
+    const handleResize = () => {
+      const currentImage = canvas.toDataURL("image/png");
+
+      setupCanvasSize();
+      restoreImage(currentImage);
+
+      undoStackRef.current = [];
+      redoStackRef.current = [];
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-        window.removeEventListener(
-        "resize",
-        handleResize
-        );
+      cancelled = true;
+      window.removeEventListener("resize", handleResize);
     };
-    }, [mode, activePageId]);
+  }, [mode, activePageId]);
 
+  // Save typed work.
   useEffect(() => {
     localStorage.setItem(
-        "stemlens-typed-work-pages",
-        JSON.stringify(typedWorkByPage)
+      "stemlens-typed-work-pages",
+      JSON.stringify(typedWorkByPage)
     );
-    }, [typedWorkByPage]);
+  }, [typedWorkByPage]);
 
+  // Save active editor mode.
   useEffect(() => {
     localStorage.setItem("stemlens-mode", mode);
   }, [mode]);
 
+  // Save workspace pages.
   useEffect(() => {
-    localStorage.setItem(
-        "stemlens-pages",
-        JSON.stringify(pages)
-    );
-    }, [pages]);
+    localStorage.setItem("stemlens-pages", JSON.stringify(pages));
+  }, [pages]);
+
+  // Save active page.
+  useEffect(() => {
+    localStorage.setItem("stemlens-active-page", activePageId);
+  }, [activePageId]);
+
+  // Notify App.tsx when the active page changes.
+  useEffect(() => {
+    onActivePageChange(activePageId);
+  }, [activePageId, onActivePageChange]);
+
+  // Send typed work and drawing images to App.tsx.
+  useEffect(() => {
+    const pageData: WorkspacePageData[] = pages.map((page) => ({
+      id: page.id,
+      name: page.name,
+      work: typedWorkByPage[page.id] || "",
+      imageData: canvasImagesByPage[page.id] || undefined,
+    }));
+
+    onPagesChange(pageData);
+  }, [
+    pages,
+    typedWorkByPage,
+    canvasImagesByPage,
+    onPagesChange,
+  ]);
+
+  const currentTypedWork = typedWorkByPage[activePageId] || "";
 
   useEffect(() => {
-    localStorage.setItem(
-        "stemlens-active-page",
-        activePageId
-    );
-    }, [activePageId]);
-
-    useEffect(() => {
-        const pageData = pages.map((page) => ({
-            id: page.id,
-            name: page.name,
-            work: typedWorkByPage[page.id] || "",
-        }));
-
-        onPagesChange(pageData);
-        }, [pages, typedWorkByPage, onPagesChange]);
-
-    useEffect(() => {
-        onActivePageChange(activePageId);
-    }, [activePageId, onActivePageChange]);
-
-
-
+    onWorkChange(currentTypedWork);
+  }, [currentTypedWork, onWorkChange]);
 
   const getPoint = (
     event: React.PointerEvent<HTMLCanvasElement>
   ): Point | null => {
     const canvas = canvasRef.current;
-
     if (!canvas) return null;
 
     const rect = canvas.getBoundingClientRect();
@@ -240,6 +229,7 @@ function WorkArea({
     };
   };
 
+  // Save canvas state for undo.
   const saveSnapshot = () => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -262,9 +252,7 @@ function WorkArea({
     redoStackRef.current = [];
   };
 
-  const configureTool = (
-    ctx: CanvasRenderingContext2D
-  ) => {
+  const configureTool = (ctx: CanvasRenderingContext2D) => {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
@@ -272,7 +260,6 @@ function WorkArea({
       ctx.globalCompositeOperation = "destination-out";
       ctx.globalAlpha = 1;
       ctx.lineWidth = lineWidth * 3;
-
       return;
     }
 
@@ -282,7 +269,6 @@ function WorkArea({
       ctx.globalAlpha = 0.28;
       ctx.lineWidth = lineWidth * 4;
       ctx.strokeStyle = color;
-
       return;
     }
 
@@ -342,23 +328,58 @@ function WorkArea({
       canvas.releasePointerCapture(event.pointerId);
     }
 
+    if (!isDrawingRef.current) return;
+
     isDrawingRef.current = false;
     lastPointRef.current = null;
 
     saveCanvas();
   };
 
+  // Save editable drawing and AI-ready image.
   const saveCanvas = () => {
     const canvas = canvasRef.current;
-
     if (!canvas) return;
 
-    const image = canvas.toDataURL("image/png");
+    const originalImage = canvas.toDataURL("image/png");
 
-    localStorage.setItem(
-      `stemlens-canvas-${activePageId}`,
-      image
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = canvas.width;
+    exportCanvas.height = canvas.height;
+
+    const ctx = exportCanvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.fillStyle = "#151a24";
+    ctx.fillRect(
+      0,
+      0,
+      exportCanvas.width,
+      exportCanvas.height
     );
+
+    ctx.drawImage(canvas, 0, 0);
+
+    const aiImage = exportCanvas.toDataURL("image/png");
+
+    try {
+      localStorage.setItem(
+        `stemlens-canvas-${activePageId}`,
+        originalImage
+      );
+
+      localStorage.setItem(
+        `stemlens-ai-canvas-${activePageId}`,
+        aiImage
+      );
+    } catch (error) {
+      console.warn("Could not save canvas to local storage.", error);
+    }
+
+    setCanvasImagesByPage((previous) => ({
+      ...previous,
+      [activePageId]: aiImage,
+    }));
   };
 
   const clearCanvas = () => {
@@ -369,6 +390,10 @@ function WorkArea({
 
     saveSnapshot();
 
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
+
     ctx.clearRect(
       0,
       0,
@@ -376,9 +401,21 @@ function WorkArea({
       canvas.height
     );
 
+    ctx.restore();
+
     localStorage.removeItem(
       `stemlens-canvas-${activePageId}`
     );
+
+    localStorage.removeItem(
+      `stemlens-ai-canvas-${activePageId}`
+    );
+
+    setCanvasImagesByPage((previous) => {
+      const updated = { ...previous };
+      delete updated[activePageId];
+      return updated;
+    });
   };
 
   const undo = () => {
@@ -398,11 +435,9 @@ function WorkArea({
     redoStackRef.current.push(current);
 
     const previous = undoStackRef.current.pop();
-
     if (!previous) return;
 
     ctx.putImageData(previous, 0, 0);
-
     saveCanvas();
   };
 
@@ -423,11 +458,9 @@ function WorkArea({
     undoStackRef.current.push(current);
 
     const next = redoStackRef.current.pop();
-
     if (!next) return;
 
     ctx.putImageData(next, 0, 0);
-
     saveCanvas();
   };
 
@@ -435,55 +468,42 @@ function WorkArea({
     const pageNumber = pages.length + 1;
 
     const newPage: WorkspacePage = {
-        id: `page-${Date.now()}`,
-        name: `Page ${pageNumber}`,
+      id: `page-${Date.now()}`,
+      name: `Page ${pageNumber}`,
     };
 
-    setPages((previousPages) => [
-        ...previousPages,
-        newPage,
-    ]);
+    setPages((previous) => [...previous, newPage]);
 
     setTypedWorkByPage((previous) => ({
-        ...previous,
-        [newPage.id]: "",
+      ...previous,
+      [newPage.id]: "",
     }));
 
     setActivePageId(newPage.id);
 
     undoStackRef.current = [];
     redoStackRef.current = [];
-    };
+  };
 
   const changePage = (pageId: string) => {
     if (pageId === activePageId) return;
 
-    saveCanvas();
-
+    // Existing drawings are already saved after each stroke.
     setActivePageId(pageId);
 
     undoStackRef.current = [];
     redoStackRef.current = [];
   };
 
-  const currentTypedWork = typedWorkByPage[activePageId] || "";
-
-  useEffect(() => {
-    onWorkChange(currentTypedWork);
-    }, [currentTypedWork, onWorkChange]);
-
-
   return (
     <section className="work-section">
       <div className="work-header">
         <div>
           <h2>Your Work</h2>
-
           <p className="work-subtitle">
             Solve it yourself, then ask STEMLens for help when you want.
           </p>
         </div>
-
         <span>Not checked</span>
       </div>
 
@@ -542,18 +562,18 @@ function WorkArea({
 
       {mode === "type" ? (
         <textarea
-            value={currentTypedWork}
-            onChange={(event) => {
-                const newValue = event.target.value;
+          value={currentTypedWork}
+          onChange={(event) => {
+            const newValue = event.target.value;
 
-                setTypedWorkByPage((previous) => ({
-                ...previous,
-                [activePageId]: newValue,
-                }));
-            }}
-            placeholder="Write your solution here..."
-            className="work-input"
-            />
+            setTypedWorkByPage((previous) => ({
+              ...previous,
+              [activePageId]: newValue,
+            }));
+          }}
+          placeholder="Write your solution here..."
+          className="work-input"
+        />
       ) : (
         <>
           <div className="drawing-toolbar">
@@ -577,9 +597,7 @@ function WorkArea({
                     ? "tool-btn active"
                     : "tool-btn"
                 }
-                onClick={() =>
-                  setTool("highlighter")
-                }
+                onClick={() => setTool("highlighter")}
               >
                 Highlighter
               </button>
@@ -610,9 +628,7 @@ function WorkArea({
                 max="12"
                 value={lineWidth}
                 onChange={(event) =>
-                  setLineWidth(
-                    Number(event.target.value)
-                  )
+                  setLineWidth(Number(event.target.value))
                 }
               />
 

@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 
+import MathExpression from "./MathExpression";
+
 import "../styles/AITutor.css";
 
+
+
 import {
-  mockCheckWork,
-  mockGetHint,
-  mockGetSolution,
-  mockTeach,
-} from "../services/mockAiService";
+  realCheckWork,
+  realGetHint,
+  realTeach,
+  realGetSolution,
+} from "../services/realAiService";
 
 import type {
   CheckWorkResponse,
@@ -18,6 +22,7 @@ import type {
   TutorMode,
   WorkspacePageData,
 } from "../types/ai.Tutor";
+
 
 type AITutorProps = {
   problem: string;
@@ -59,29 +64,47 @@ function AITutor({
     useState<SolutionResponse | null>(null);
 
   const pagesWithWork = useMemo(
-    () =>
-      pages.filter(
-        (page) => page.work.trim().length > 0
-      ),
-    [pages]
-  );
+  () =>
+    pages.filter(
+      (page) =>
+        page.work.trim().length > 0 ||
+        Boolean(page.imageData)
+    ),
+  [pages]
+);
 
-  const selectedPages: SelectedWorkPage[] =
-    useMemo(() => {
-      return pages
-        .filter((page) =>
-          selectedPageIds.includes(page.id)
-        )
-        .filter(
-          (page) =>
-            page.work.trim().length > 0
-        )
-        .map((page) => ({
-          pageId: page.id,
-          pageName: page.name,
-          work: page.work,
-        }));
-    }, [pages, selectedPageIds]);
+  
+const selectedPages: SelectedWorkPage[] = useMemo(() => {
+  return pages
+    .filter((page) =>
+      selectedPageIds.includes(page.id)
+    )
+    .filter(
+      (page) =>
+        page.work.trim().length > 0 ||
+        Boolean(page.imageData)
+    )
+    .map((page) => ({
+      pageId: page.id,
+      pageName: page.name,
+
+      // Use handwriting for Check My Work when available.
+      work: page.imageData ? "" : page.work,
+
+      imageData: page.imageData,
+    }));
+}, [pages, selectedPageIds]);
+
+const typedSelectedPages: SelectedWorkPage[] = pages
+  .filter((page) =>
+    selectedPageIds.includes(page.id)
+  )
+  .filter((page) => page.work.trim().length > 0)
+  .map((page) => ({
+    pageId: page.id,
+    pageName: page.name,
+    work: page.work,
+  }));
 
   useEffect(() => {
     if (!activePageId) {
@@ -96,24 +119,32 @@ function AITutor({
       return;
     }
 
-    if (!activePage.work.trim()) {
+    if (
+      !activePage.work.trim() &&
+      !activePage.imageData
+    ) {
       return;
     }
 
     setSelectedPageIds([activePageId]);
   }, [activePageId, pages]);
 
-  useEffect(() => {
-    setSelectedPageIds((previous) =>
-      previous.filter((pageId) =>
-        pages.some(
-          (page) =>
-            page.id === pageId &&
-            page.work.trim().length > 0
-        )
+  
+useEffect(() => {
+  setSelectedPageIds((previous) =>
+    previous.filter((pageId) =>
+      pages.some(
+        (page) =>
+          page.id === pageId &&
+          (
+            page.work.trim().length > 0 ||
+            Boolean(page.imageData)
+          )
       )
-    );
-  }, [pages]);
+    )
+  );
+}, [pages]);
+
 
   const resetMessages = () => {
     setError("");
@@ -165,7 +196,7 @@ function AITutor({
     setCheckResult(null);
 
     try {
-      const result = await mockCheckWork({
+      const result = await realCheckWork({
         problem,
         pages: selectedPages,
       });
@@ -189,88 +220,98 @@ function AITutor({
   };
 
   const handleGiveHint = async () => {
-    if (!canUseAI) {
-      return;
-    }
+  if (!canUseAI) {
+    return;
+  }
 
-    setLoading(true);
-    resetMessages();
-    setHintResult(null);
+  setLoading(true);
+  resetMessages();
+  setHintResult(null);
 
-    try {
-      const result = await mockGetHint({
-        problem,
-        pages: selectedPages,
-      });
+  try {
+    const result = await realGetHint({
+      problem,
+      pages: typedSelectedPages,
+    });
 
-      setHintResult(result);
-      setMode("hint");
-    } catch (err) {
-      console.error(err);
+    setHintResult(result);
+    setMode("hint");
 
-      setError(
-        "STEMLens could not generate a hint."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error("AI Hint Error:", err);
 
-  const handleTeach = async () => {
-    if (!canUseAI) {
-      return;
-    }
+    setError(
+      "STEMLens could not generate a hint. Please try again."
+    );
 
-    setLoading(true);
-    resetMessages();
-    setTeachResult(null);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const result = await mockTeach({
-        problem,
-        pages: selectedPages,
-      });
+  
+const handleTeach = async () => {
+  if (!canUseAI) {
+    return;
+  }
 
-      setTeachResult(result);
-      setMode("teach");
-    } catch (err) {
-      console.error(err);
+  setLoading(true);
+  resetMessages();
+  setTeachResult(null);
 
-      setError(
-        "STEMLens could not generate the explanation."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const result = await realTeach({
+      problem,
+      pages: typedSelectedPages,
+    });
 
-  const handleShowSolution = async () => {
-    if (!canUseAI) {
-      return;
-    }
+    setTeachResult(result);
+    setMode("teach");
 
-    setLoading(true);
-    resetMessages();
-    setSolutionResult(null);
+  } catch (err) {
+    console.error("AI Teach Error:", err);
 
-    try {
-      const result = await mockGetSolution({
-        problem,
-        pages: selectedPages,
-      });
+    setError(
+      "STEMLens could not generate the explanation. Please try again."
+    );
 
-      setSolutionResult(result);
-      setMode("solution");
-    } catch (err) {
-      console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setError(
-        "STEMLens could not generate the solution."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  
+const handleShowSolution = async () => {
+  if (!canUseAI) {
+    return;
+  }
+
+  setLoading(true);
+  resetMessages();
+  setSolutionResult(null);
+
+  try {
+    const result = await realGetSolution({
+      problem,
+      pages: typedSelectedPages,
+    });
+
+    setSolutionResult(result);
+    setMode("solution");
+
+  } catch (err) {
+    console.error("AI Solution Error:", err);
+
+    setError(
+      "STEMLens could not generate the solution. Please try again."
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const selectedCount =
     selectedPageIds.length;
@@ -355,8 +396,8 @@ function AITutor({
               <div className="page-check-list">
                 {pages.map((page) => {
                   const hasWork =
-                    page.work.trim().length >
-                    0;
+                  page.work.trim().length > 0 ||
+                  Boolean(page.imageData);
 
                   const selected =
                     selectedPageIds.includes(
@@ -850,9 +891,7 @@ function AITutor({
                   </span>
 
                   <strong>
-                    {
-                      teachResult.formula
-                    }
+                    <MathExpression expression={teachResult.formula} />
                   </strong>
                 </div>
               )}
@@ -935,10 +974,8 @@ function AITutor({
                         </p>
 
                         <strong>
-                          {
-                            step.expression
-                          }
-                        </strong>
+                           <MathExpression expression={step.expression} />
+                          </strong>
                       </div>
                     </div>
                   )
@@ -951,9 +988,7 @@ function AITutor({
                 </span>
 
                 <strong>
-                  {
-                    solutionResult.finalAnswer
-                  }
+                  <MathExpression expression={solutionResult.finalAnswer} />
                 </strong>
               </div>
 
